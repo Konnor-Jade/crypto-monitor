@@ -1,6 +1,7 @@
 import { getConfig } from './config/env';
 import { logger } from './utils/logger';
 import { BlockchainService } from './services/blockchain';
+import { TransactionMonitor } from './services/monitor';
 
 async function main() {
   try {
@@ -22,13 +23,30 @@ async function main() {
     const blockchain = new BlockchainService(config.rpcUrl);
     await blockchain.connect();
 
+    // 初始化交易监控服务
+    const monitor = new TransactionMonitor(
+      blockchain.getProvider(),
+      config.watchAddresses
+    );
+
     logger.success('✓ 系统初始化完成！');
     logger.info('━'.repeat(50));
 
     // 开始监听新区块
     blockchain.onNewBlock(async (blockNumber) => {
-      // 这里后续会添加交易扫描逻辑
       logger.info(`📦 新区块 #${blockNumber} - 正在扫描交易...`);
+
+      // 扫描区块中的交易
+      const transactions = await monitor.scanBlock(blockNumber);
+
+      if (transactions.length > 0) {
+        logger.success(`✓ 发现 ${transactions.length} 笔相关交易`);
+
+        // 显示每笔交易的详细信息
+        for (const tx of transactions) {
+          console.log(monitor.formatTransactionInfo(tx));
+        }
+      }
     });
 
     logger.info('🔍 监控系统运行中... (按 Ctrl+C 退出)');
