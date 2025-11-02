@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
+  "author": "Konnor-Jade",
   "description": "加密货币交易监控与通知系统",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",

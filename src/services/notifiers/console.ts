@@ -1,6 +1,6 @@
 import { BaseNotifier } from './base';
 import { Transaction } from '../../types';
-import { formatAddress, formatEther, formatTimestamp, formatTxHash } from '../../utils/formatter';
+import { formatAddress, formatTimestamp, formatTxHash } from '../../utils/formatter';
 
 /**
  * 控制台通知服务
