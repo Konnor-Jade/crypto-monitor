@@ -2,6 +2,7 @@ import { getConfig } from './config/env';
 import { logger } from './utils/logger';
 import { BlockchainService } from './services/blockchain';
 import { TransactionMonitor } from './services/monitor';
+import { ConsoleNotifier } from './services/notifiers';
 
 async function main() {
   try {
@@ -29,6 +30,9 @@ async function main() {
       config.watchAddresses
     );
 
+    // 初始化通知服务
+    const notifier = new ConsoleNotifier(config.watchAddresses, config.notification.enabled);
+
     logger.success('✓ 系统初始化完成！');
     logger.info('━'.repeat(50));
 
@@ -40,11 +44,12 @@ async function main() {
       const transactions = await monitor.scanBlock(blockNumber);
 
       if (transactions.length > 0) {
-        logger.success(`✓ 发现 ${transactions.length} 笔相关交易`);
+        // 显示统计摘要
+        await notifier.showSummary(transactions.length, blockNumber);
 
-        // 显示每笔交易的详细信息
+        // 发送每笔交易的通知
         for (const tx of transactions) {
-          console.log(monitor.formatTransactionInfo(tx));
+          await notifier.notify(tx);
         }
       }
     });
