@@ -3,7 +3,8 @@
     "allow": [
       "Bash(yarn dev)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 初始化加密货币监控项目基础架构\n\n- 配置 TypeScript 和开发环境\n- 创建项目基础目录结构 (config, services, types, utils)\n- 实现环境变量配置和验证\n- 添加日志工具和数据格式化工具\n- 创建项目完整规划文档 (PROJECT_PLAN.md)\n- 配置 npm scripts (dev, build, start, clean)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

@@ -1,5 +1,6 @@
 import { getConfig } from './config/env';
 import { logger } from './utils/logger';
+import { BlockchainService } from './services/blockchain';
 
 async function main() {
   try {
@@ -17,8 +18,20 @@ async function main() {
     logger.info(`RPC URL: ${rpcDisplay}`);
     logger.info(`通知方式: ${config.notification.type}`);
 
-    // 后续步骤会在这里添加区块链监听逻辑
-    logger.info('系统初始化完成，准备开始监控...');
+    // 初始化区块链服务
+    const blockchain = new BlockchainService(config.rpcUrl);
+    await blockchain.connect();
+
+    logger.success('✓ 系统初始化完成！');
+    logger.info('━'.repeat(50));
+
+    // 开始监听新区块
+    blockchain.onNewBlock(async (blockNumber) => {
+      // 这里后续会添加交易扫描逻辑
+      logger.info(`📦 新区块 #${blockNumber} - 正在扫描交易...`);
+    });
+
+    logger.info('🔍 监控系统运行中... (按 Ctrl+C 退出)');
 
   } catch (error) {
     logger.error('启动失败:', error);
